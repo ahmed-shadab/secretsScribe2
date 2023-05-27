@@ -72,8 +72,27 @@ app.post('/register',function(req,res){
 })
 
 app.get('/login',function(req,res){
-    res.render('login')
+    if(req.isAuthenticated()){
+        res.render('secrets')
+    }
+    else{
+        res.render('login')
+    }
 })
+
+app.post('/login',function(req,res){
+    passport.authenticate('local', { failureRedirect: '/login', failureMessage: true })
+    (req,res,function() {
+        res.redirect('/secrets');
+    });
+})
+
+app.get('/logout', function(req, res, next){
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      res.redirect('/');
+    });
+});
 
 app.get('/secrets',function(req,res){
     if(req.isAuthenticated()){
